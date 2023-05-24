@@ -4,18 +4,7 @@
   import * as x from "$lib/grapesjs-plugins/ssoor";
 
   onMount(() => {
-    const editor = grapesjs.init({
-      height: "100%",
-      container: "#gjs",
-      showOffsets: true,
-      fromElement: true,
-      noticeOnUnload: false,
-      storageManager: false,
-      plugins: [x.default],
-      canvas: {
-        // styles: ['https://...'],
-        // scripts: ['https://cdn.tailwindcss.com'],
-        frameContent: `<script type="text/javascript" src="https://cdn.tailwindcss.com"><\/script><script>      tailwind.config = {
+    const tailwindScript = `<script type="text/javascript" src="https://cdn.tailwindcss.com"><\/script><script>      tailwind.config = {
         darkMode: "class",
         theme: {
     extend: {
@@ -366,7 +355,19 @@
   },
         corePlugins: {
         },
-      };<\/script>`,
+      };<\/script>`;
+    const editor = grapesjs.init({
+      height: "100%",
+      container: "#gjs",
+      showOffsets: true,
+      fromElement: true,
+      noticeOnUnload: false,
+      storageManager: false,
+      plugins: [x.default],
+      canvas: {
+        // styles: ['https://...'],
+        // scripts: ['https://cdn.tailwindcss.com'],
+        frameContent: tailwindScript,
       },
       pluginsOpts: {
         //   'grapesjs-svelte': { /* Test here your options  */ }

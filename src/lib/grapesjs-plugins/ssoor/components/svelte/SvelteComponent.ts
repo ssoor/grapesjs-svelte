@@ -65,6 +65,8 @@ export class CustomComponent {
         ...toolbarBtnCustomCode
       });
     }
+
+    this.onCustomCodeChange()
   }
 
 
