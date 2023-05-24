@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.gjs-tools {
+    display: unset !important;
+}
+
+.gjs-offset-v {
+    opacity: 1 !important;
+}

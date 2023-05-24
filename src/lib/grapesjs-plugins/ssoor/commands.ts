@@ -1,16 +1,14 @@
-import { keyCustomCode, type PluginOptions } from '.';
-import type { CommandObject, Editor } from 'grapesjs';
+import { keyCustomCode, type PluginOptions } from ".";
+import type { CommandObject, Editor } from "grapesjs";
 
-import type grapesjs from 'grapesjs';
-import { default as ComponentDrag } from 'grapesjs/src/commands/view/ComponentDrag';
-import type CodeManagerModule from 'grapesjs/src/code_manager';
-import type CodeMirrorEditor from 'grapesjs/src/code_manager/model/CodeMirrorEditor';
-import type Component from 'grapesjs/src/dom_components/model/Component';
-import { eventDrag } from 'grapesjs/src/dom_components/model/Component';
+import type grapesjs from "grapesjs";
+import { default as ComponentDrag } from "grapesjs/src/commands/view/ComponentDrag";
+import type CodeManagerModule from "grapesjs/src/code_manager";
+import type CodeMirrorEditor from "grapesjs/src/code_manager/model/CodeMirrorEditor";
+import type Component from "grapesjs/src/dom_components/model/Component";
+import { eventDrag } from "grapesjs/src/dom_components/model/Component";
 
-
-export const commandNameCustomCode = 'custom-code:open-modal';
-
+export const commandNameCustomCode = "custom-code:open-modal";
 
 export default (editor: Editor, opts: PluginOptions = {}) => {
   const cmd = new CustomCommand(editor, opts);
@@ -34,16 +32,12 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
     run(editor, sender, opts) {
       return drag.run(editor, sender, opts!);
     },
-    // stop(editor, sender, opts) {
-    // return drag.stop(editor, sender, opts!);
-    // },
   });
-
 };
 
 class DragCommand {
   private opts: any;
-  private startStyles: any;
+  private editor: Editor;
   public move: CommandObject<any, {}>;
   public drag: CommandObject<any, {}>;
   constructor(editor: Editor, opts: PluginOptions) {
@@ -54,10 +48,29 @@ class DragCommand {
       onStop: this.drag.OnStop,
       onStart: this.drag.onStart,
       setPosition: this.drag.setPosition,
-    }
+    };
+    this.editor = editor;
 
-    this.drag.onStart = (event: Event) => { this.onStart(event) };
-    this.drag.setPosition = ({ x, y, end, position, width, height }: any) => { this.setPosition({ x, y, end, position, width, height }) };
+    editor.Commands.add("core:component-drag", {
+      ...this.drag,
+
+      run: (editor, sender, opts) => {
+        return this.dragRun(editor, sender, opts!);
+      },
+      stop: (editor, sender, opts) => {
+        return this.dragStop(editor, sender, opts!);
+      },
+    });
+
+    this.drag.onStart = (event: Event) => {
+      return this.onStart(event);
+    };
+    this.drag.getPosition = () => {
+      return this.getPosition();
+    };
+    this.drag.setPosition = ({ x, y, end, position, width, height }: any) => {
+      return this.setPosition({ x, y, end, position, width, height });
+    };
   }
 
   run(editor: Editor, sender: any, opts: Record<string, any>): void {
@@ -65,9 +78,9 @@ class DragCommand {
 
     this.opts.em = editor.getModel();
     this.opts.target = target;
-    this.opts.isTran = mode == 'translate';
+    this.opts.isTran = mode == "translate";
 
-    if (event.constructor.name != 'DragEvent') {
+    if (event.constructor.name != "DragEvent") {
       this.move.run!(editor, sender, opts);
     } else {
       const em = editor.getModel();
@@ -75,15 +88,15 @@ class DragCommand {
       const { target } = opts;
       const sel = target || editor.getSelected();
       const selAll = target ? [target] : [...editor.getSelectedAll()];
-      const nativeDrag = event && event.type == 'dragstart';
+      const nativeDrag = event && event.type == "dragstart";
       const defComOptions = { preserveSelected: 1 };
 
-      if (!sel || !sel.get('draggable')) {
-        return em.logWarning('The element is not draggable');
+      if (!sel || !sel.get("draggable")) {
+        return em.logWarning("The element is not draggable");
       }
 
       const hideTlb = () => em.stopDefault(defComOptions);
-      selAll.forEach(sel => sel.trigger('disable'));
+      selAll.forEach((sel) => sel.trigger("disable"));
 
       // Without setTimeout the ghost image disappears
       nativeDrag ? setTimeout(hideTlb, 0) : hideTlb();
@@ -95,7 +108,7 @@ class DragCommand {
         em.trigger(eventDrag, data);
       };
       const onEnd = (e: any, opts: any, data: any) => {
-        selAll.forEach(sel => sel.set('status', 'selected'));
+        selAll.forEach((sel) => sel.set("status", "selected"));
         editor.select(selAll);
         sel.emitUpdate();
         em.trigger(`${eventDrag}:end`, data);
@@ -104,58 +117,53 @@ class DragCommand {
         setTimeout(() => em.runDefault(defComOptions));
 
         // Dirty patch to prevent parent selection on drop
-        em.set('_cmpDrag', 1);
+        em.set("_cmpDrag", 1);
       };
 
       opts = {
         guidesInfo: 1,
-        mode:'translate',
+        mode: "translate",
         target: sel,
         onStart,
         onDrag,
         onEnd,
         event,
       };
-      this.drag.run!(editor, sender, { ...opts, mode: "translate" });
+
+      editor.runCommand("core:component-drag", opts);
     }
   }
 
-  stop(editor: Editor, sender: any, opts: Record<string, any>) {
+  dragRun(editor: Editor, sender: any, opts: Record<string, any>): void {
+    const { Canvas } = editor;
     const { target, event, mode, dragger = {} } = opts;
 
-    if (event.constructor.name != 'DragEvent') {
-      this.move.stop!(editor, sender, opts);
-    } else {
-      this.drag.stop!(editor, sender, { ...opts, mode: "translate" });
+    const { left, top, width, height } = Canvas.offset(target.getEl());
+    const { x, y } = Canvas.getMouseRelativeCanvas(event, undefined);
+
+    let margeMode = "tl";
+    if (y - top > height / 2) {
+      margeMode = "br";
     }
+
+    this.opts = {
+      ...this.opts,
+
+      em: editor.getModel(),
+      target: target,
+      canvas: Canvas,
+      isTran: mode == "translate",
+      margeMode: margeMode,
+    };
+
+    this.drag.run!(editor, sender, { ...opts, mode: "translate" });
+  }
+
+  dragStop(editor: Editor, sender: any, opts: Record<string, any>) {
+    this.drag.stop!(editor, sender, { ...opts, mode: "translate" });
   }
 
   onStart(event: Event) {
-    const { target } = this.opts;
-
-    const unit = 'px'
-    const styles = target.getStyle();
-    const computedStyles = window.getComputedStyle(target.getEl());
-
-    let marginTop = styles["margin-top"] || computedStyles.marginTop || "0px";
-    let marginLeft = styles["margin-left"] || computedStyles.marginLeft || "0px";
-
-    if (`${parseFloat(marginTop)}${unit}` == marginTop) {
-      marginTop = `${parseFloat(marginTop)}${unit}`;
-    } else {
-      marginTop = "0px";
-    }
-    if (`${parseFloat(marginLeft)}${unit}` == marginLeft) {
-      marginLeft = `${parseFloat(marginLeft)}${unit}`;
-    } else {
-      marginLeft = "0px";
-    }
-    this.startStyles = {
-      "margin-top": marginTop,
-      "margin-left": marginLeft,
-    };
-
-    console.log("onStart style", this.startStyles);
     this.opts.onStart.bind(this.drag.dragger, event);
   }
 
@@ -175,13 +183,48 @@ class DragCommand {
     return result;
   }
 
-  setPosition({ x, y, end, position, width, height }: any) {
-    if (!this.startStyles) {
-      return this.opts.setPosition.call(this.drag, { x, y, end, position, width, height });
+  getPosition() {
+    const { target, margeMode } = this.opts;
+
+    const unit = "px";
+    const styles = target.getStyle();
+    const computedStyles = window.getComputedStyle(target.getEl());
+
+    let x = "0px";
+    let y = "0px";
+    switch (margeMode) {
+      case "tl": {
+        x = styles["margin-left"] || computedStyles.marginLeft || "0px";
+        y = styles["margin-top"] || computedStyles.marginTop || "0px";
+        break;
+      }
+      case "br": {
+        x = styles["margin-right"] || computedStyles.marginLeft || "0px";
+        y = styles["margin-bottom"] || computedStyles.marginTop || "0px";
+        break;
+      }
     }
 
+    if (`${parseFloat(y)}${unit}` == y) {
+      y = `${parseFloat(y)}${unit}`;
+    } else {
+      y = "0px";
+    }
+    if (`${parseFloat(x)}${unit}` == x) {
+      x = `${parseFloat(x)}${unit}`;
+    } else {
+      x = "0px";
+    }
+
+    return {
+      x: parseFloat(x || "0"),
+      y: parseFloat(y || "0"),
+    };
+  }
+
+  setPosition({ x, y, end, position, width, height }: any) {
     // @ts-ignore
-    const { target, isTran, em }: { target: Component, isTran: boolean, } = this.opts;
+    const { target, margeMode, em }: { target: Component; isTran: boolean } = this.opts;
     const unit = "px";
     const en = !end ? 1 : ""; // this will trigger the final change
     const left = `${x}${unit}`;
@@ -194,29 +237,90 @@ class DragCommand {
     // @ts-ignore
     transform = this.setTranslate(transform, "y", top);
     styleUp = { transform, en };
+    let marginY = `${y}${unit}`;
+    switch (margeMode) {
+      case "tl": {
+        styleUp = {
+          "margin-left": `${x}${unit}`,
+          "margin-top": `${y}${unit}`,
+        };
+        break;
+      }
+      case "br": {
+        const pos = (this.drag as any).dragger.startPosition;
 
-    const styles = this.startStyles;
+        const xPos = x - pos.x;
+        const yPos = y - pos.y;
 
-    let marginTop = styles["margin-top"];
-    let marginLeft = styles["margin-left"];
-    console.log("setPosition margin", marginTop, marginLeft, x, y);
-
-    marginTop = `${parseInt(marginTop) + y}${unit}`;
-    marginLeft = `${parseInt(marginLeft) + x}${unit}`;
-    styleUp = {
-      "margin-top": marginTop,
-      "margin-left": marginLeft,
-    };
+        styleUp = {
+          "margin-right": `${pos.x + -xPos}${unit}`,
+          "margin-bottom": `${pos.y + yPos}${unit}`,
+        };
+        break;
+      }
+    }
 
     target.addStyle(styleUp, { avoidStore: !end });
 
     console.log("setPosition", styleUp);
 
     // Update StyleManager properties
-    em.getSelected() &&
-      Object.keys(styleUp).forEach((i: any) =>
-        em.trigger(`update:component:style:${i}`)
-      );
+    em.getSelected() && Object.keys(styleUp).forEach((i: any) => em.trigger(`update:component:style:${i}`));
+
+    this.showElementOffset(target.getEl()!, { view: target.view });
+  }
+  /**
+   * Show element offset viewer
+   * @param {HTMLElement}  el
+   * @param {Object} pos
+   */
+  showElementOffset(el: HTMLElement, opts: any = {}) {
+    const pos = this.opts.canvas.getElementPos(el);
+
+    const toolsEl = this.toggleToolsEl(true, opts.view);
+    const { style } = toolsEl;
+    const frameOff = this.opts.canvas.canvasRectOffset(el, pos);
+    const topOff = frameOff.top;
+    const leftOff = frameOff.left;
+
+    const unit = "px";
+    style.top = topOff + unit;
+    style.left = leftOff + unit;
+    style.width = pos.width + unit;
+    style.height = pos.height + unit;
+
+    this._trgToolUp("local", {
+      component: this.opts.target,
+      el: toolsEl,
+      top: topOff,
+      left: leftOff,
+      width: pos.width,
+      height: pos.height,
+    });
+
+    var { marginLeft, marginRight, marginTop, marginBottom } = window.getComputedStyle(el);
+    console.log("showElementOffset", pos, marginTop, marginLeft, marginBottom, marginRight);
+    this.editor.runCommand("show-offset", {
+      el,
+      elPos: pos,
+      view: opts.view,
+      force: 1,
+      top: 0,
+      left: 0,
+    });
+  }
+
+  _trgToolUp(type: string, opts = {}) {
+    this.opts.em.trigger("canvas:tools:update", {
+      type,
+      ...opts,
+    });
+  }
+
+  toggleToolsEl(on: boolean, view: any, opts: any = {}) {
+    const el = opts.el || this.opts.canvas.getToolsEl(view);
+    el && (el.style.display = on ? "" : "none");
+    return el || {};
   }
 }
 
@@ -246,7 +350,7 @@ class CustomCommand {
     const target = opts.target || editor.getSelected();
     this.target = target;
 
-    if (target?.get('editable')) {
+    if (target?.get("editable")) {
       this.showCustomCode(target, opts);
     }
   }
@@ -261,23 +365,25 @@ class CustomCommand {
    */
   showCustomCode(target: Component, options: any) {
     const title = options.title || this.modalTitle;
-    const code = target.get(keyCustomCode) || '';
+    const code = target.get(keyCustomCode) || "";
     const content = this.getContent();
-    this.editor.Modal
-      .open({ title, content })
-      .onceClose(() => this.editor.stopCommand(commandNameCustomCode))
+    this.editor.Modal.open({ title, content }).onceClose(() => this.editor.stopCommand(commandNameCustomCode));
     this.getCodeViewer().setContent(code);
   }
 
   /**
    * Custom pre-content. Can be a simple string or an HTMLElement
    */
-  getPreContent(): string | HTMLElement | undefined { return; }
+  getPreContent(): string | HTMLElement | undefined {
+    return;
+  }
 
   /**
    * Custom post-content. Can be a simple string or an HTMLElement
    */
-  getPostContent(): string | HTMLElement | undefined { return; }
+  getPostContent(): string | HTMLElement | undefined {
+    return;
+  }
 
   /**
    * Get all the content for the custom code
@@ -285,8 +391,8 @@ class CustomCommand {
    */
   getContent() {
     const codeViewer = this.getCodeViewer();
-    const content = document.createElement('div');
-    const pfx = this.editor.getConfig('stylePrefix');
+    const content = document.createElement("div");
+    const pfx = this.editor.getConfig("stylePrefix");
     content.className = `${pfx}custom-code`;
     this.appendToContent(content, this.getPreContent());
     content.appendChild(codeViewer.getElement()!);
@@ -303,14 +409,13 @@ class CustomCommand {
    * @return {HTMLElement|String}
    */
   getContentActions() {
-    const div = document.createElement('div');
-    const btn = document.createElement('button');
-    btn.setAttribute('type', 'button');
-    const pfx = this.editor.getConfig('stylePrefix');
+    const div = document.createElement("div");
+    const btn = document.createElement("button");
+    btn.setAttribute("type", "button");
+    const pfx = this.editor.getConfig("stylePrefix");
     btn.innerHTML = this.buttonLabel;
     btn.className = `${pfx}btn-prim ${pfx}btn-import__custom-code`;
     btn.onclick = () => this.handleSave();
-
 
     const defaultCode = `
     <script>
@@ -318,10 +423,10 @@ class CustomCommand {
       export let count = 0;
     </script>
 
-    <h1 on:click={()=>{count++}}>Hello {name} - {count}!</h1>`
+    <h1 on:click={()=>{count++}}>Hello {name} - {count}!</h1>`;
 
-    const exampleBtn = document.createElement('button');
-    exampleBtn.setAttribute('type', 'button');
+    const exampleBtn = document.createElement("button");
+    exampleBtn.setAttribute("type", "button");
     exampleBtn.innerHTML = "Example";
     exampleBtn.className = `${pfx}btn-prim ${pfx}btn-import__custom-code`;
     exampleBtn.onclick = () => {
@@ -351,8 +456,8 @@ class CustomCommand {
   getCodeViewer(): CodeMirrorEditor {
     if (!this.codeViewer) {
       this.codeViewer = this.editor.CodeManager.createViewer({
-        codeName: 'htmlmixed',
-        theme: 'hopscotch',
+        codeName: "htmlmixed",
+        theme: "hopscotch",
         readOnly: 0,
         ...this.codeViewOptions,
       });
@@ -361,12 +466,11 @@ class CustomCommand {
     return this.codeViewer!;
   }
 
-
   appendToContent(target: HTMLElement, content?: HTMLElement | string) {
     if (content instanceof HTMLElement) {
       target.appendChild(content);
     } else if (content) {
-      target.insertAdjacentHTML('beforeend', content);
+      target.insertAdjacentHTML("beforeend", content);
     }
   }
 }
