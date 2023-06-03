@@ -2,360 +2,37 @@
   import { Editor, default as grapesjs } from "grapesjs";
   import { onMount } from "svelte";
   import * as x from "$lib/grapesjs-plugins/ssoor";
+  // Initialization for ES Users
+  import { Ripple, Input, initTE } from "tw-elements";
 
   onMount(() => {
-    const tailwindScript = `<script type="text/javascript" src="https://cdn.tailwindcss.com"><\/script><script>      tailwind.config = {
-        darkMode: "class",
-        theme: {
-    extend: {
-      screens: {
-        xs: "320px",
-      },
-      fontFamily: {
-        sans: ["Roboto", "sans-serif"],
-        body: ["Roboto", "sans-serif"],
-        mono: ["ui-monospace", "monospace"],
-      },
-      boxShadow: {
-        "te-primary": "0 0 0 1px rgb(59, 113, 202)",
-      },
-      keyframes: {
-        "fade-in": {
-          "0%": { opacity: 0 },
-          "100%": { opacity: 1 },
-        },
-        "fade-out": {
-          "0%": { opacity: 1 },
-          "100%": { opacity: 0 },
-        },
-        "fade-in-down": {
-          "0%": {
-            opacity: 0,
-            transform: "translate3d(0, -100%, 0)",
+    initTE({ Ripple, Input });
+    const tailwindScript = `<!DOCTYPE html>
+      <head>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tw-elements/dist/css/tw-elements.min.css" />
+      </head>
+      <body></body>
+      <script src="https://cdn.tailwindcss.com/3.3.0"><\/script>
+      <script>
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            fontFamily: {
+              sans: ["Roboto", "sans-serif"],
+              body: ["Roboto", "sans-serif"],
+              mono: ["ui-monospace", "monospace"],
+            },
           },
-          "100%": {
-            opacity: 1,
-            transform: "translate3d(0, 0, 0)",
+          corePlugins: {
+            preflight: false,
           },
-        },
-        "fade-in-left": {
-          "0%": {
-            opacity: 0,
-            transform: "translate3d(-100%, 0, 0)",
-          },
-          "100%": {
-            opacity: 1,
-            transform: "translate3d(0, 0, 0)",
-          },
-        },
-        "fade-in-right": {
-          "0%": {
-            opacity: 0,
-            transform: "translate3d(100%, 0, 0)",
-          },
-          "100%": {
-            opacity: 1,
-            transform: "translate3d(0, 0, 0)",
-          },
-        },
-        "fade-in-up": {
-          "0%": {
-            opacity: 0,
-            transform: "translate3d(0, 100%, 0)",
-          },
-          "100%": {
-            opacity: 1,
-            transform: "translate3d(0, 0, 0)",
-          },
-        },
-        "fade-out-down": {
-          "0%": {
-            opacity: 1,
-          },
-          "100%": {
-            opacity: 0,
-            transform: "translate3d(0, 100%, 0)",
-          },
-        },
-        "fade-out-left": {
-          "0%": {
-            opacity: 1,
-          },
-          "100%": {
-            opacity: 0,
-            transform: "translate3d(-100%, 0, 0)",
-          },
-        },
-        "fade-out-right": {
-          "0%": {
-            opacity: 1,
-          },
-          "100%": {
-            opacity: 0,
-            transform: "translate3d(100%, 0, 0)",
-          },
-        },
-        "fade-out-up": {
-          "0%": {
-            opacity: 1,
-          },
-          "100%": {
-            opacity: 0,
-            transform: "translate3d(0, -100%, 0)",
-          },
-        },
-        "slide-in-down": {
-          "0%": {
-            visibility: "visible",
-            transform: "translate3d(0, -100%, 0)",
-          },
-          "100%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-        },
-        "slide-in-left": {
-          "0%": {
-            visibility: "visible",
-            transform: "translate3d(-100%, 0, 0)",
-          },
-          "100%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-        },
-        "slide-in-right": {
-          "0%": {
-            visibility: "visible",
-            transform: "translate3d(100%, 0, 0)",
-          },
-          "100%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-        },
-        "slide-in-up": {
-          "0%": {
-            visibility: "visible",
-            transform: "translate3d(0, 100%, 0)",
-          },
-          "100%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-        },
-        "slide-out-down": {
-          "0%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-          "100%": {
-            visibility: "hidden",
-            transform: "translate3d(0, 100%, 0)",
-          },
-        },
-        "slide-out-left": {
-          "0%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-          "100%": {
-            visibility: "hidden",
-            transform: "translate3d(-100%, 0, 0)",
-          },
-        },
-        "slide-out-right": {
-          "0%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-          "100%": {
-            visibility: "hidden",
-            transform: "translate3d(100%, 0, 0)",
-          },
-        },
-        "slide-out-up": {
-          "0%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-          "100%": {
-            visibility: "hidden",
-            transform: "translate3d(0, -100%, 0)",
-          },
-        },
-        "slide-down": {
-          "0%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-          "100%": {
-            transform: "translate3d(0, 100%, 0)",
-          },
-        },
-        "slide-left": {
-          "0%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-          "100%": {
-            transform: "translate3d(-100%, 0, 0)",
-          },
-        },
-        "slide-right": {
-          "0%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-          "100%": {
-            transform: "translate3d(100%, 0, 0)",
-          },
-        },
-        "slide-up": {
-          "0%": {
-            transform: "translate3d(0, 0, 0)",
-          },
-          "100%": {
-            transform: "translate3d(0, -100%, 0)",
-          },
-        },
-        "zoom-in": {
-          "0%": {
-            opacity: 0,
-            transform: "scale3d(0.3, 0.3, 0.3)",
-          },
-          "50%": {
-            opacity: 1,
-          },
-        },
-        "zoom-out": {
-          "0%": {
-            opacity: 1,
-          },
-          "50%": {
-            opacity: 0,
-            transform: "scale3d(0.3, 0.3, 0.3)",
-          },
-          "100%": {
-            opacity: 0,
-          },
-        },
-        tada: {
-          "0%": {
-            transform: "scale3d(1, 1, 1)",
-          },
-          "10%, 20%": {
-            transform: "scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg)",
-          },
-          "30%, 50%, 70%, 90%": {
-            transform: "scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg)",
-          },
-          "40%, 60%, 80%": {
-            transform: "scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg)",
-          },
-          "100%": {
-            transform: "scale3d(1, 1, 1)",
-          },
-        },
-        "spinner-grow": {
-          "0%": {
-            transform: "scale(0)",
-          },
-          "50%": {
-            transform: "none",
-            opacity: "1",
-          },
-        },
-        "placeholder-wave": {
-          "100%": { maskPosition: "-200% 0%" },
-        },
-        "show-up-clock": {
-          "0%": {
-            opacity: "0",
-            transform: "scale(0.7)",
-          },
-          "100%": {
-            opacity: "1",
-            transform: "scale(1)",
-          },
-        },
-      },
-      colors: {
-        primary: {
-          DEFAULT: "#3B71CA",
-          50: "#F1F5FB",
-          100: "#E3EBF7",
-          200: "#C7D7F0",
-          300: "#ABC2E8",
-          400: "#8FAEE0",
-          500: "#6590D5",
-          600: "#3061AF",
-          700: "#285192",
-          800: "#204075",
-          900: "#183058",
-          "accent-100": "#d9e4f3",
-          "accent-200": "#cedbee",
-        },
-        secondary: {
-          DEFAULT: "#9FA6B2",
-          50: "#F8F9F9",
-          100: "#F1F2F4",
-          200: "#E4E6E9",
-          300: "#D6D9DE",
-          400: "#C8CCD3",
-          500: "#B3B9C2",
-          600: "#848D9C",
-          700: "#6B7585",
-          800: "#565D6B",
-          900: "#404650",
-        },
-        success: {
-          DEFAULT: "#14A44D",
-          50: "#EAFCF2",
-          100: "#D6FAE4",
-          200: "#ACF5C9",
-          300: "#83F0AE",
-          400: "#59EA93",
-          500: "#1CE26B",
-          600: "#118C42",
-          700: "#0E7537",
-          800: "#0C5D2C",
-          900: "#094621",
-        },
-        danger: {
-          DEFAULT: "#DC4C64",
-          50: "#FCF2F4",
-          100: "#FAE5E9",
-          200: "#F5CCD3",
-          300: "#F0B2BD",
-          400: "#EB99A6",
-          500: "#E37285",
-          600: "#D42A46",
-          700: "#B0233A",
-          800: "#8D1C2F",
-          900: "#6A1523",
-        },
-        warning: {
-          DEFAULT: "#E4A11B",
-          50: "#FDF8EF",
-          100: "#FBF2DE",
-          200: "#F7E4BE",
-          300: "#F4D79D",
-          400: "#F0C97D",
-          500: "#EAB54C",
-          600: "#C48A17",
-          700: "#A37313",
-          800: "#825C0F",
-          900: "#62450B",
-        },
-        info: {
-          DEFAULT: "#54B4D3",
-          50: "#F3FAFC",
-          100: "#E7F4F9",
-          200: "#CEE9F2",
-          300: "#B6DFEC",
-          400: "#9ED4E6",
-          500: "#79C4DC",
-          600: "#34A4CA",
-          700: "#2B89A8",
-          800: "#236D86",
-          900: "#1A5265",
-        },
-      },
-    },
-  },
-        corePlugins: {
-        },
-      };<\/script>`;
+        };
+      <\/script>
+      <script type="module">
+        import { Ripple, Input, initTE } from "https://cdn.jsdelivr.net/npm/tw-elements/dist/js/tw-elements.es.min.js";
+        initTE({ Ripple, Input });
+      <\/script>
+      </html>`;
     const editor = grapesjs.init({
       height: "100%",
       container: "#gjs",
@@ -364,6 +41,9 @@
       noticeOnUnload: false,
       storageManager: false,
       plugins: [x.default],
+      selectorManager: {
+        escapeName: (name: string) => name,
+      },
       canvas: {
         // styles: ['https://...'],
         // scripts: ['https://cdn.tailwindcss.com'],
@@ -379,8 +59,69 @@
 </script>
 
 <div id="gjs" style="height:0px; overflow:hidden">
+  <div
+    class="block max-w-sm rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700"
+  >
+    <form>
+      <!--E-mail input-->
+      <div class="relative mb-12" data-te-input-wrapper-init>
+        <input
+          type="email"
+          class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+          id="exampleInputEmail1"
+          aria-describedby="emailHelp"
+          placeholder="Enter email"
+        />
+        <label
+          for="exampleInputEmail1"
+          class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
+          >Email address</label
+        >
+        <small id="emailHelp" class="absolute w-full text-neutral-500 dark:text-neutral-200" data-te-input-helper-ref
+          >We'll never share your email with anyone else.</small
+        >
+      </div>
+
+      <!--Password input-->
+      <div class="relative mb-6" data-te-input-wrapper-init>
+        <input
+          type="password"
+          class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+          id="exampleInputPassword1"
+          placeholder="Password"
+        />
+        <label
+          for="exampleInputPassword1"
+          class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary"
+          >Password</label
+        >
+      </div>
+
+      <!--Checkbox-->
+      <div class="mb-6 block min-h-[1.5rem] pl-[1.5rem]">
+        <input
+          class="relative float-left -ml-[1.5rem] mr-[6px] mt-[0.15rem] h-[1.125rem] w-[1.125rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid border-neutral-300 outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:border-primary checked:bg-primary checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.25rem] checked:after:block checked:after:h-[0.8125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:border-white checked:after:bg-transparent checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid checked:focus:after:border-white checked:focus:after:bg-transparent dark:border-neutral-600 dark:checked:border-primary dark:checked:bg-primary dark:focus:before:shadow-[0px_0px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[0px_0px_0px_13px_#3b71ca]"
+          type="checkbox"
+          value=""
+          id="checkboxDefault"
+        />
+        <label class="inline-block pl-[0.15rem] hover:cursor-pointer" for="checkboxDefault"> Check me out </label>
+      </div>
+
+      <!--Submit button-->
+      <button
+        type="submit"
+        class="inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+        data-te-ripple-init
+        data-te-ripple-color="light"
+      >
+        Submit
+      </button>
+    </form>
+  </div>
+
   <div style="margin:100px 100px 25px; padding:25px; font:caption">
-    This is a demo content from _index.html. You can use this template file for
-    development purpose. It won't be stored in your git repository
+    This is a demo content from _index.html. You can use this template file for development purpose. It won't be stored
+    in your git repository
   </div>
 </div>
