@@ -9,3 +9,7 @@
 .gjs-offset-v {
     opacity: 1 !important;
 }
+
+.gjs-dashed *[data-gjs-highlightable] {
+    outline: unset !important;
+}

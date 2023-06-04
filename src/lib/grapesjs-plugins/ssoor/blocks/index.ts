@@ -18,7 +18,7 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
     category: "Extra",
   };
 
-  const add = (def: typeof BasicButton) => {
+  const add = (def: any) => {
     Blocks.add(def.id, {
       ...baseDef,
       ...def,
@@ -35,10 +35,10 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
     Blocks.add(typeCustomCode, {
       label: "Custom Code",
       media: `
-      <svg viewBox="0 0 24 24">
-        <path d="M14.6 16.6l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4m-5.2 0L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4z"></path>
-      </svg>
-    `,
+    <svg viewBox="0 0 24 24">
+      <path d="M14.6 16.6l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4m-5.2 0L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4z"></path>
+    </svg>
+  `,
       category: "Extra",
       select: true,
       activate: true,
@@ -46,24 +46,106 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
       ...blockCustomCode,
     });
 
-  Blocks.add("class", {
-    label: "Class Code",
-    media: `
-      <svg viewBox="0 0 24 24">
-        <path d="M14.6 16.6l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4m-5.2 0L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4z"></path>
-      </svg>
-    `,
-    category: "Class",
+  Blocks.add("button", {
+    label: "button",
+    media: `<h1>button</h1>`,
+    category: "Extra",
+    content: `<button data-gjs-type="tw-button"
+    type="button"
+    class="inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]">
+    <span data-gjs-type="text">Button</span>
+  </button>`,
+  });
+  Blocks.add("container", {
+    label: "container",
+    media: `<h1>container</h1>`,
+    category: "Extra",
+    content: { type: "tw-container" },
+  });
+  Blocks.add("list", {
+    label: "list",
+    media: `<h1>list</h1>`,
+    category: "Extra",
+    content: { type: "tw-list" },
+  });
+  Blocks.add("navbar", {
+    label: "navbar",
+    media: `<h1>navbar</h1>`,
+    category: "Extra",
+    content: { type: "tw-navigation_bar" },
+  });
+  Blocks.add("icon", {
+    label: "icon",
+    media: `<h1>icon</h1>`,
+    category: "Extra",
+    content: { type: "tw-icon" },
+  });
+
+  Blocks.add("list_item", {
+    label: "list_item",
+    media: `<h1>list_item</h1>`,
+    category: "Extra",
+    content: { type: "tw-list-item" },
+  });
+
+  Blocks.add("tw-dropdown", {
+    label: "dropdown",
+    media: `<h1>dropdown</h1>`,
+    category: "Extra",
     content: {
-      type: "class",
-      class:
-        "inline-block rounded bg-primary px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]",
+      type: "tw-dropdown",
+      components: [
+        {
+          type: "tw-container",
+          attributes: { id: "dropdownMenuButton2", "data-te-dropdown-toggle-ref": true },
+          components: [
+            {
+              type: "tw-icon",
+            },
+          ],
+        },
+        {
+          attributes: {
+            class: "absolute z-[1000] overflow-hidden hidden [&[data-te-dropdown-show]]:block",
+            "aria-labelledby": "dropdownMenuButton2",
+            "data-te-dropdown-menu-ref": true,
+          },
+          content: `<ul
+      class="left-auto right-0 float-left m-0 mt-1 min-w-max list-none rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700">
+      <!-- Second dropdown menu items -->
+      <li>
+        <a
+          class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
+          href="#"
+          data-te-dropdown-item-ref
+          >Action</a
+        >
+      </li>
+      <li>
+        <a
+          class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
+          href="#"
+          data-te-dropdown-item-ref
+          >Another action</a
+        >
+      </li>
+      <li>
+        <a
+          class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
+          href="#"
+          data-te-dropdown-item-ref
+          >Something else here</a
+        >
+      </li>
+    </ul>`,
+        },
+      ],
     },
   });
 
   Blocks.add("flex-row", {
-    label: "flex-row",
-    media: `<div>row</div>`,
+    label: "横排",
+    media: `<h1>横排</h1>`,
     category: "Class",
     content: { type: "class", class: "flex flex-row" },
   });
@@ -72,7 +154,11 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
     label: "flex-row2",
     media: `<div>row</div>`,
     category: "Class",
-    content: { type: "class", class: "pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary" },
+    content: {
+      type: "class",
+      class:
+        "pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary",
+    },
   });
 
   const addBlock = (id: string, def: BlockProperties) => {
@@ -106,7 +192,7 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
     media: `<svg viewBox="0 0 24 24">
         <path fill="currentColor" d="M14,17H17L19,13V7H13V13H16M6,17H9L11,13V7H5V13H8L6,17Z" />
     </svg>`,
-    content:{
+    content: {
       type: "form",
       editable: false,
       droppable: true,
@@ -117,6 +203,34 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
       },
     },
   });
+  const addClass = (def: { id?: string; label: string; class: string | string[] }) => {
+    const id = def.id || def.label;
+    if (typeof def.class == "object") {
+      def.class = def.class.join(" ");
+    }
+    def.class = "text-neutral-50 " + def.class;
+
+    Blocks.add(id, {
+      ...baseDef,
+
+      media: `<div class='${def.class}'>${def.label}</div>`,
+      category: "Class",
+      id: "class-" + id.replace(/\s/g, "_"),
+      label: def.label,
+      content: { type: "class", class: def.class },
+    });
+
+    console.log("color", def.label);
+  };
+  addClass({ label: "Primary", class: "bg-primary" });
+  addClass({ label: "secondary", class: "bg-secondary" });
+  addClass({ label: "secondary", class: "bg-secondary" });
+  addClass({ label: "danger", class: "bg-danger" });
+  addClass({ label: "warning", class: "bg-warning" });
+  addClass({ label: "warning", class: "bg-warning" });
+  addClass({ label: "neutral-50", class: "bg-neutral-50 text-neutral-800" });
+  addClass({ label: "neutral-800", class: "bg-neutral-800" });
+  addClass({ label: "dark:neutral-900", class: "dark:bg-neutral-900" });
 
   addBlock("button", {
     label: "Button",
