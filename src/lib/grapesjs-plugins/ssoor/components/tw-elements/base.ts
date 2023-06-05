@@ -80,7 +80,6 @@ export class BaseComponentView {
 
 export class BaseComponentModel {
   view: BaseComponentView;
-  model: ComponentModel;
   editor: Editor;
 
   type?: string;
@@ -89,7 +88,6 @@ export class BaseComponentModel {
 
   constructor(editor: Editor, view: BaseComponentView) {
     this.view = view;
-    this.model = {} as any;
     this.editor = editor;
 
     this.extend = "tw-elements";
@@ -104,7 +102,13 @@ export class BaseComponentModel {
         obj: this,
         defaults: this.defaults,
         init() {
-          this.obj.init(this as unknown as ComponentModel);
+          this.obj.init(this as any);
+        },
+        toHTML() {
+          return this.obj.toHTML(this as any);
+        },
+        isComponent(el: HTMLElement) {
+          return this.obj.isComponent(this as any, el);
         },
       },
       view: {
@@ -127,6 +131,9 @@ export class BaseComponentModel {
           _view.model.setClass(el.className);
           _view.model.setAttributes(attrs);
 
+          _view.model.set("style-default", _view.model.get("style"));
+          _view.model.set("class-default", _view.model.getClasses());
+
           this.obj.view.init(_view);
         },
         onRender(opts: { editor: Editor; model: ComponentModel; el: HTMLElement }) {
@@ -137,8 +144,6 @@ export class BaseComponentModel {
   }
 
   init(model: ComponentModel) {
-    this.model = model;
-
     const attrs = { ...model.get("attributes") };
     const style = { ...model.get("style-default"), ...model.get("style") };
 
@@ -154,8 +159,60 @@ export class BaseComponentModel {
     // model.listenTo(model, "change:attributes", this.handleAttributeChange);
   }
 
-  isComponent(el: Element) {
-    const { type, model } = this;
+  /**
+   * Have to change a few things for the MJML's xml (no id, style, class)
+   */
+  toHTML(model: ComponentModel) {
+    const tag = model.getName();
+    const voidTag = model.get("void");
+    const classes = this.remove({ ...model.getClasses() }, { ...model.get(`class-default`) });
+    const attr = this.remove({ ...model.get("attributes") }, { ...model.get(`attributes-default`) });
+
+    let strAttr = "";
+    for (let prop in attr) {
+      const val = attr[prop];
+      const hasValue = typeof val !== "undefined" && val !== "";
+      strAttr += hasValue ? ` ${prop}="${val}"` : "";
+    }
+    let classesAttr = [];
+    for (let prop in classes) {
+      const val = classes[prop];
+
+      if (typeof val !== "undefined" && val !== "") {
+        classesAttr.push(val)
+      }
+    }
+    let strClass = classesAttr.length > 0 ? ` class="${classesAttr.join(" ")}"` : '';
+
+    let code = "";
+    code += `<${tag}${strClass}${strAttr}${voidTag ? "/" : ""}>` + model.get("content");
+
+    model.components().forEach((model: any) => {
+      code += model.toHTML();
+    });
+
+    if (!voidTag) {
+      code += `</${tag}>`;
+    }
+
+    return code;
+  }
+
+  remove(values: any, needRemove: any) {
+    for (let prop in values) {
+      const value = values[prop];
+
+      if (value && value === needRemove[prop]) {
+        delete values[prop];
+        console.log("delete default value", prop);
+      }
+    }
+
+    return values;
+  }
+
+  isComponent(model: ComponentModel, el: Element) {
+    const { type } = this;
     if (!type) {
       return (model as any).isComponent(el);
     }
@@ -175,8 +232,7 @@ export class BaseComponentModel {
     model.set("attributes", style, opts);
   }
 
-  getMjmlAttributes() {
-    const { model } = this;
+  getMjmlAttributes(model: ComponentModel) {
     const attr = model.get("attributes") || {};
     delete attr.style;
     const src = model.get("src");
@@ -188,8 +244,7 @@ export class BaseComponentModel {
    * This will avoid rendering default attributes
    * @return {Object}
    */
-  getAttrToHTML() {
-    const { model } = this;
+  getAttrToHTML(model: ComponentModel) {
     const attr = { ...model.get("attributes") };
     const style = { ...model.get("style-default") };
     delete attr.style;
@@ -199,44 +254,14 @@ export class BaseComponentModel {
 
       if (value && value === style[prop]) {
         delete attr[prop];
+        console.log("delete attr", prop);
       }
     }
 
     return attr;
   }
 
-  /**
-   * Have to change a few things for the MJML's xml (no id, style, class)
-   */
-  toHTML() {
-    const { model } = this;
-    const tag = model.get("tagName");
-    const voidTag = model.get("void");
-    const attr = this.getAttrToHTML();
-    let code = "";
-    let strAttr = "";
-
-    for (let prop in attr) {
-      const val = attr[prop];
-      const hasValue = typeof val !== "undefined" && val !== "";
-      strAttr += hasValue ? ` ${prop}="${val}"` : "";
-    }
-
-    code += `<${tag}${strAttr}${voidTag ? "/" : ""}>` + model.get("content");
-
-    model.components().forEach((model: any) => {
-      code += model.toHTML();
-    });
-
-    if (!voidTag) {
-      code += `</${tag}>`;
-    }
-
-    return code;
-  }
-
-  isHidden() {
-    const { model } = this;
+  isHidden(model: ComponentModel) {
     return model.getStyle().display === "none";
   }
 
