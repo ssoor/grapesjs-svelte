@@ -12,6 +12,7 @@ import { ListItem, ListItemView } from "./tw-elements/list-item";
 import { NavBar, NavBarView } from "./tw-elements/navigation_bar";
 import { Icon, IconView } from "./tw-elements/icon";
 import { Container, ContainerView } from "./tw-elements/container";
+import { Content, ContentView } from "./tw-elements/content";
 
 export const typeCustomCode = "custom-code";
 
@@ -34,5 +35,6 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
   new ListItem(editor, new ListItemView()).registry(Components);
   new NavBar(editor, new NavBarView()).registry(Components);
   new Dropdown(editor, new DropdownView()).registry(Components);
+  new Content(editor, new ContentView()).registry(Components);
   new Container(editor, new ContainerView()).registry(Components);
 };

@@ -1,18 +1,22 @@
-import { keyCustomCode, type PluginOptions } from ".";
+import { keyCustomCode, type PluginOptions } from "../";
 import type { CommandObject, Editor } from "grapesjs";
 
 import type grapesjs from "grapesjs";
+import juice from "juice";
 import { default as ComponentDrag } from "grapesjs/src/commands/view/ComponentDrag";
 import type CodeManagerModule from "grapesjs/src/code_manager";
 import type CodeMirrorEditor from "grapesjs/src/code_manager/model/CodeMirrorEditor";
 import type Component from "grapesjs/src/dom_components/model/Component";
 import { eventDrag } from "grapesjs/src/dom_components/model/Component";
+import { ExportTemplate } from "./export-template";
 
 export const commandNameCustomCode = "custom-code:open-modal";
+import { cmdClear, cmdDeviceDesktop, cmdDeviceMobile, cmdDeviceTablet } from '../consts';
 
 export default (editor: Editor, opts: PluginOptions = {}) => {
   const cmd = new CustomCommand(editor, opts);
   const drag = new DragCommand(editor, opts);
+  const exportTemplate = new ExportTemplate(editor,opts);
 
   // Add the custom code command
   editor.Commands.add(commandNameCustomCode, {
@@ -31,6 +35,32 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
 
     run(editor, sender, opts) {
       return drag.run(editor, sender, opts!);
+    },
+  });
+  
+  const txtConfirm = "确认清空画板吗？";
+  editor.Commands.add(cmdClear, {
+    run(editor, sender, opts) {
+      const cmd = 'core:canvas-clear';
+      if (txtConfirm) {
+        confirm(txtConfirm) && editor.runCommand(cmd);
+      } else {
+        editor.runCommand(cmd);
+      }
+    }
+  });
+
+  editor.Commands.add("export-template", {
+    run(editor, sender, opts) {
+      return exportTemplate.run(editor, sender, opts!);
+    },
+  });
+  
+
+  editor.Commands.add("gjs-get-inlined-html", {
+    run(editor, s, opts = {}) {
+      const tmpl = editor.getHtml() + `<style>${editor.getCss()}</style>`;
+      return juice(tmpl, { ...opts.juiceOpts, ...opts });
     },
   });
 };
@@ -260,6 +290,7 @@ class DragCommand {
       }
     }
 
+    //@ts-ignore
     target.addStyle(styleUp, { avoidStore: !end });
 
     console.log("setPosition", styleUp);

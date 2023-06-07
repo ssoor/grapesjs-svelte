@@ -1,14 +1,13 @@
-import loadBlocks from './blocks';
-import loadCommands from './commands';
-import loadComponents from './components';
+import loadPanels from "./panels";
+import loadBlocks from "./blocks";
+import loadCommands from "./commands";
+import loadComponents from "./components";
 // import en from './locale/en';
-import type {Plugin,BlockProperties,ComponentDefinition} from 'grapesjs';
+import type { Plugin, BlockProperties, ComponentDefinition } from "grapesjs";
 
-
-export const keyCustomCode = 'custom-code-plugin__code';
+export const keyCustomCode = "custom-code-plugin__code";
 
 export type PluginOptions = {
-
   /**
    * Object to extend the default custom code block. Pass a falsy value to avoid adding the block
    * @example
@@ -21,47 +20,46 @@ export type PluginOptions = {
    * @example
    * { name: 'Custom Code', droppable: false, ... }
    */
-   propsCustomCode?: ComponentDefinition;
+  propsCustomCode?: ComponentDefinition;
 
   /**
    * Object to extend the default component's toolbar button for the code. Pass a falsy value to avoid adding the button
    * @example
    * { label: '</>', attributes: { title: 'Open custom code' } }
    */
-   toolbarBtnCustomCode?: Record<string, any>;
+  toolbarBtnCustomCode?: Record<string, any>;
 
-   /**
-    * Content to show when the custom code contains `<script>`
-    */
-   placeholderScript?: string;
+  /**
+   * Content to show when the custom code contains `<script>`
+   */
+  placeholderScript?: string;
 
-   /**
-    * Title for the custom code modal
-    * @default 'Insert your code'
-    */
-   modalTitle?: string;
+  /**
+   * Title for the custom code modal
+   * @default 'Insert your code'
+   */
+  modalTitle?: string;
 
-   /**
-    * Additional options for the code viewer.
-    * @example
-    * { theme: 'hopscotch', readOnly: 0 }
-    */
-   codeViewOptions?: Record<string, any>;
+  /**
+   * Additional options for the code viewer.
+   * @example
+   * { theme: 'hopscotch', readOnly: 0 }
+   */
+  codeViewOptions?: Record<string, any>;
 
-   /**
-    * Label for the default save button
-    * @default 'Save'
-    */
-    buttonLabel?: string;
+  /**
+   * Label for the default save button
+   * @default 'Save'
+   */
+  buttonLabel?: string;
 
-    /**
-     * Object to extend the default custom code command.
-     */
-    commandCustomCode?: Record<string, any>;
-}
+  /**
+   * Object to extend the default custom code command.
+   */
+  commandCustomCode?: Record<string, any>;
+};
 
 const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
-
   const options: PluginOptions = {
     // i18n: {},
     // default options
@@ -74,11 +72,11 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
         </svg>
       Custom code with <i>&lt;script&gt;</i> can't be rendered on the canvas
     </div>`,
-    modalTitle: 'Insert your code',
+    modalTitle: "Insert your code",
     codeViewOptions: {},
-    buttonLabel: 'Save',
+    buttonLabel: "Save",
     commandCustomCode: {},
-    ...opts
+    ...opts,
   };
 
   // Add components
@@ -87,21 +85,24 @@ const plugin: Plugin<PluginOptions> = (editor, opts = {}) => {
   loadBlocks(editor, options);
   // Add commands
   loadCommands(editor, options);
+  // Add panels
+  loadPanels(editor, options);
 
   // Load i18n files
   // editor.I18n && editor.I18n.addMessages({
-      // en,
-      // ...options.i18n,
+  // en,
+  // ...options.i18n,
   // });
 
   // TODO Remove
-  editor.on('load', () =>
-    editor.addComponents(
-        `<div style="margin:100px; padding:25px;">
-            Content loaded from the plugin~~~
-        </div>`,
-        { at: 0 }
-    ))
+  // editor.on("load", () =>
+  //   editor.addComponents(
+  //     `<div style="margin:100px; padding:25px;">
+  //           Content loaded from the plugin~~~
+  //       </div>`,
+  //     { at: 0 }
+  //   )
+  // );
 };
 
 export default plugin;

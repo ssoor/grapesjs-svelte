@@ -39,25 +39,37 @@ export class BaseComponentView {
 
     const parentEl = this.getChildrenSelector ? el.querySelector(this.getChildrenSelector!())! : el;
 
+    const components = model.components();
+    if (components.models.length == 1) {
+      const model = components.models[0];
+      if (model.getName() == "Box" && model.get("content")!.trim() == "") {
+        components.remove(components.models[0]);
+      }
+    }
+
     const emptyEl = this.emptyEl.cloneNode(true);
     if (model.components().models.length == 0) {
-      let childs = [];
-      while (emptyEl.firstChild) {
-        childs.push(emptyEl.firstChild);
-        parentEl.appendChild(emptyEl.firstChild);
+      if ((parentEl as any).emptyEl === undefined) {
+        (parentEl as any).emptyEl = [];
+        while (emptyEl.firstChild) {
+          (parentEl as any).emptyEl.push(emptyEl.firstChild);
+          parentEl.appendChild(emptyEl.firstChild);
+        }
       }
-      (parentEl as any).emptyEl = childs;
     } else {
       Array.from((parentEl as any).emptyEl || []).forEach((child) => {
         parentEl.removeChild(child as Node);
       });
       (parentEl as any).emptyEl = undefined;
 
+      let components: string[] = [];
       model.components().forEach(function (component) {
+        components.push(component.getName());
         parentEl.appendChild(component.view?.el!);
       });
+
+      console.log("onRender", model.getName(), model.getId(), model.components().models.length, components);
     }
-    console.log("onRender", model.getName(), model.getId(), model.components().models.length);
   }
 
   /**
@@ -98,6 +110,9 @@ export class BaseComponentModel {
     const view = this.view;
     const el = view.createElementByHTML(view.el);
     components.addType(this.type!, {
+      isComponent: (el: HTMLElement) => {
+        return this.isComponent(el);
+      },
       model: {
         obj: this,
         defaults: this.defaults,
@@ -106,9 +121,6 @@ export class BaseComponentModel {
         },
         toHTML() {
           return this.obj.toHTML(this as any);
-        },
-        isComponent(el: HTMLElement) {
-          return this.obj.isComponent(this as any, el);
         },
       },
       view: {
@@ -179,10 +191,10 @@ export class BaseComponentModel {
       const val = classes[prop];
 
       if (typeof val !== "undefined" && val !== "") {
-        classesAttr.push(val)
+        classesAttr.push(val);
       }
     }
-    let strClass = classesAttr.length > 0 ? ` class="${classesAttr.join(" ")}"` : '';
+    let strClass = classesAttr.length > 0 ? ` class="${classesAttr.join(" ")}"` : "";
 
     let code = "";
     code += `<${tag}${strClass}${strAttr}${voidTag ? "/" : ""}>` + model.get("content");
@@ -211,13 +223,17 @@ export class BaseComponentModel {
     return values;
   }
 
-  isComponent(model: ComponentModel, el: Element) {
+  isComponent(el: Element) {
     const { type } = this;
     if (!type) {
-      return (model as any).isComponent(el);
+      return false;
     }
 
-    (el.tagName || "").toLowerCase() === type;
+    const tagName = (el.tagName || "").toLowerCase();
+    const nodeName = (el.nodeName || "").toLowerCase();
+    // console.log("isComponent:", nodeName, el.nodeType, el.nodeValue?.trim(), tagName, type);
+
+    return tagName === type;
   }
 
   handleAttributeChange(m: any, v: any, opts: any) {

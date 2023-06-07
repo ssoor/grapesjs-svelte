@@ -10,7 +10,7 @@ export class DropdownView extends BaseComponentView {
   constructor() {
     super();
 
-    this.el = `<div class="relative"  data-te-dropdown-position="dropstart"></div>`;
+    this.el = `<div class="relative" data-te-dropdown-position="dropstart"></div>`;
     this.emptyEl.innerHTML = `
       <!-- Second dropdown trigger -->
       <a
@@ -60,6 +60,7 @@ export class DropdownView extends BaseComponentView {
         </li>
       </ul>`;
   }
+  
 }
 
 export class Dropdown extends BaseComponentModel {

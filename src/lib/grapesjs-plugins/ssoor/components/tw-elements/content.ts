@@ -4,30 +4,29 @@ import { BaseComponentView, BaseComponentModel } from "./base";
 import type ComponentView from "grapesjs/src/dom_components/view/ComponentView";
 import type ComponentModel from "grapesjs/src/dom_components/model/Component";
 
-export const type = "tw-container";
+export const type = "tw-content";
 
-export class ContainerView extends BaseComponentView {
+export class ContentView extends BaseComponentView {
   constructor() {
     super();
 
-    this.el = `<div></div>`;
-    this.emptyEl.innerHTML = `<div
+    this.el = `<div
     class="flex flex-row justify-between block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
-      <div
-      class="block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
-      TEXT
-      </div><div
-      class="block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
-      TEXT
-      </div><div
-      class="block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
-      TEXT
-      </div>
+  </div>`;
+    this.emptyEl.innerHTML = `<div
+    class="block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+    TEXT
+    </div><div
+    class="block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+    TEXT
+    </div><div
+    class="block rounded-lg bg-white p-6 shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07),0_10px_20px_-2px_rgba(0,0,0,0.04)] dark:bg-neutral-700">
+    TEXT
     </div>`;
   }
 }
 
-export class Container extends BaseComponentModel {
+export class Content extends BaseComponentModel {
   constructor(editor: Editor, view: BaseComponentView) {
     super(editor, view);
 

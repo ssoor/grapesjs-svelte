@@ -97,7 +97,7 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
       components: [
         {
           type: "tw-container",
-          attributes: { id: "dropdownMenuButton2", "data-te-dropdown-toggle-ref": true },
+          attributes: { "data-te-dropdown-toggle-ref": true },
           components: [
             {
               type: "tw-icon",
@@ -105,39 +105,40 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
           ],
         },
         {
+          type: "tw-container",
           attributes: {
             class: "absolute z-[1000] overflow-hidden hidden [&[data-te-dropdown-show]]:block",
             "aria-labelledby": "dropdownMenuButton2",
             "data-te-dropdown-menu-ref": true,
           },
-          content: `<ul
-      class="left-auto right-0 float-left m-0 mt-1 min-w-max list-none rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700">
-      <!-- Second dropdown menu items -->
-      <li>
-        <a
-          class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
-          href="#"
-          data-te-dropdown-item-ref
-          >Action</a
-        >
-      </li>
-      <li>
-        <a
-          class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
-          href="#"
-          data-te-dropdown-item-ref
-          >Another action</a
-        >
-      </li>
-      <li>
-        <a
-          class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
-          href="#"
-          data-te-dropdown-item-ref
-          >Something else here</a
-        >
-      </li>
-    </ul>`,
+          components: [
+            {
+              content: `<ul
+          class="overflow-hidden left-auto right-0 float-left m-0 mt-1 min-w-max list-none rounded-lg border-none bg-white bg-clip-padding text-left text-base shadow-lg dark:bg-neutral-700">
+          <!-- Second dropdown menu items -->
+          <li><a
+              class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
+              href="#"
+              data-te-dropdown-item-ref
+              >Action</a
+            ></li>
+          <li><a
+              class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
+              href="#"
+              data-te-dropdown-item-ref
+              >Another action</a
+            >
+          </li>
+          <li>
+            <a
+              class="block w-full whitespace-nowrap bg-transparent px-4 py-2 text-sm font-normal text-neutral-700 hover:bg-neutral-100 active:text-neutral-800 active:no-underline disabled:pointer-events-none disabled:bg-transparent disabled:text-neutral-400 dark:text-neutral-200 dark:hover:bg-white/30"
+              href="#"
+              data-te-dropdown-item-ref
+              >Something else here</a
+            ></li>
+        </ul>`,
+            },
+          ],
         },
       ],
     },

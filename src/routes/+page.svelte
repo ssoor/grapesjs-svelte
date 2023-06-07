@@ -75,9 +75,13 @@
       showOffsets: true,
       fromElement: true,
       noticeOnUnload: false,
-      storageManager: false,
-      plugins: [x.default],
+      storageManager: {
+        options: {
+          local: { key: "gjsProjectNl" },
+        },
+      },
       selectorManager: {
+        componentFirst: true,
         escapeName: (name: string) => name,
       },
       canvas: {
@@ -85,10 +89,14 @@
         // scripts: ['https://cdn.tailwindcss.com'],
         frameContent: tailwindScript,
       },
+      plugins: [x.default],
       pluginsOpts: {
         //   'grapesjs-svelte': { /* Test here your options  */ }
       },
     });
+
+    // console.log(editor.Components.getTypes());
+    // editor.Components.removeType("textnode");
 
     (window as any).editor = editor;
   });
