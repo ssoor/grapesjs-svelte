@@ -75,6 +75,8 @@
       showOffsets: true,
       fromElement: true,
       noticeOnUnload: false,
+      log: ["debug", "info", "warning", "error"],
+      protectedCss: "",
       storageManager: {
         options: {
           local: { key: "gjsProjectNl" },
@@ -97,6 +99,59 @@
 
     // console.log(editor.Components.getTypes());
     // editor.Components.removeType("textnode");
+
+    // The `props` argument will contain only the properties you have declared in `script-props`
+    const script = function (props:any) {
+      const myLibOpts = {
+        prop1: props.myprop1,
+        prop2: props.myprop2,
+      };
+      alert("My lib options: " + JSON.stringify(myLibOpts));
+    };
+
+    editor.Components.addType("comp-with-js", {
+      model: {
+        defaults: {
+          script,
+          // Define default values for your custom properties
+          myprop1: "value1",
+          myprop2: "10",
+          // Define traits, in order to change your properties
+          traits: [
+            {
+              type: "select",
+              name: "myprop1",
+              changeProp: true,
+              options: [
+                { value: "value1", name: "Value 1" },
+                { value: "value2", name: "Value 2" },
+              ],
+            },
+            {
+              type: "number",
+              name: "myprop2",
+              changeProp: true,
+            },
+          ],
+          // Define which properties to pass (this will also reset your script on their changes)
+          "script-props": ["myprop1", "myprop2"],
+          // ...
+        },
+      },
+    });
+
+    editor.Blocks.add("comp-with-js", {
+      label: "Custom Code",
+      media: `
+    <svg viewBox="0 0 24 24">
+      <path d="M14.6 16.6l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4m-5.2 0L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4z"></path>
+    </svg>
+  `,
+      category: "Extra",
+      select: true,
+      activate: true,
+      content: { type: "comp-with-js",content:"{[ myprop1 ]}" },
+    });
 
     (window as any).editor = editor;
   });

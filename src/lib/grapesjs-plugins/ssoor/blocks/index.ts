@@ -107,9 +107,8 @@ export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
         {
           type: "tw-container",
           attributes: {
-            class: "absolute z-[1000] overflow-hidden hidden [&[data-te-dropdown-show]]:block",
-            "aria-labelledby": "dropdownMenuButton2",
             "data-te-dropdown-menu-ref": true,
+            class: "absolute z-[1000] overflow-hidden hidden [&[data-te-dropdown-show]]:block",
           },
           components: [
             {

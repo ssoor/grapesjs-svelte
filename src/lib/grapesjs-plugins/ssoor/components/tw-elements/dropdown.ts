@@ -60,7 +60,6 @@ export class DropdownView extends BaseComponentView {
         </li>
       </ul>`;
   }
-  
 }
 
 export class Dropdown extends BaseComponentModel {
@@ -104,19 +103,6 @@ export class Dropdown extends BaseComponentModel {
         "border-style",
         "border-color",
       ],
-      "style-default": {
-        "background-color": "#414141",
-        "border-radius": "3px",
-        "font-size": "13px",
-        "font-weight": "400",
-        color: "#ffffff",
-        "vertical-align": "middle",
-        "padding-top": "10px",
-        "padding-bottom": "10px",
-        "padding-right": "25px",
-        "padding-left": "25px",
-        align: "center",
-      },
       traits: ["href"],
       // 'container-background-color', 'inner-padding'
     };

@@ -108,7 +108,7 @@ export class BaseComponentModel {
 
   registry(components: ComponentManager) {
     const view = this.view;
-    const el = view.createElementByHTML(view.el);
+    const templateEl = view.createElementByHTML(view.el);
     components.addType(this.type!, {
       isComponent: (el: HTMLElement) => {
         return this.isComponent(el);
@@ -125,26 +125,33 @@ export class BaseComponentModel {
       },
       view: {
         obj: this,
-        tagName: el.tagName,
+        tagName: templateEl.tagName,
         getChildrenSelector: this.view.getChildrenSelector,
         init() {
           const _view = this as unknown as ComponentView;
 
-          _view.el.innerHTML = el.innerHTML;
-          _view.el.className = el.className;
-          _view.el.style.cssText = el.style.cssText;
+          _view.el.innerHTML = templateEl.innerHTML;
+          // _view.el.className = templateEl.className;
+          // _view.el.style.cssText = templateEl.style.cssText;
 
           let attrs: any = _view.model.getAttributes();
-          for (const attr of el.attributes) {
+          for (const attr of templateEl.attributes) {
             attrs[attr.name] = attr.value;
           }
+
           delete attrs["style"];
-          _view.model.set("style", el.style);
-          _view.model.setClass(el.className);
           _view.model.setAttributes(attrs);
+
+          _view.model.set("style", templateEl.style);
+          _view.model.setClass(templateEl.className);
 
           _view.model.set("style-default", _view.model.get("style"));
           _view.model.set("class-default", _view.model.getClasses());
+
+          if (!attrs.class) {
+            attrs.class = "";
+          }
+          _view.model.setClass(templateEl.className + " " + attrs.class);
 
           this.obj.view.init(_view);
         },
@@ -159,14 +166,14 @@ export class BaseComponentModel {
     const attrs = { ...model.get("attributes") };
     const style = { ...model.get("style-default"), ...model.get("style") };
 
-    for (let prop in style) {
-      if (!(prop in attrs)) {
-        attrs[prop] = style[prop];
-      }
-    }
+    // for (let prop in style) {
+    //   if (!(prop in attrs)) {
+    //     attrs[prop] = style[prop];
+    //   }
+    // }
 
+    model.set("style", style);
     model.set("attributes", attrs);
-    model.set("style", attrs);
     // model.listenTo(model, "change:style", this.handleStyleChange);
     // model.listenTo(model, "change:attributes", this.handleAttributeChange);
   }
@@ -177,8 +184,19 @@ export class BaseComponentModel {
   toHTML(model: ComponentModel) {
     const tag = model.getName();
     const voidTag = model.get("void");
-    const classes = this.remove({ ...model.getClasses() }, { ...model.get(`class-default`) });
     const attr = this.remove({ ...model.get("attributes") }, { ...model.get(`attributes-default`) });
+
+    delete attr["class"];
+    let items = [];
+    const classes = this.remove({ ...model.getClasses() }, { ...model.get(`class-default`) });
+    for (let prop in classes) {
+      const val = classes[prop];
+
+      if (typeof val !== "undefined" && val !== "") {
+        items.push(val);
+      }
+    }
+    attr["class"] = items.join(" ")
 
     let strAttr = "";
     for (let prop in attr) {
@@ -186,18 +204,9 @@ export class BaseComponentModel {
       const hasValue = typeof val !== "undefined" && val !== "";
       strAttr += hasValue ? ` ${prop}="${val}"` : "";
     }
-    let classesAttr = [];
-    for (let prop in classes) {
-      const val = classes[prop];
-
-      if (typeof val !== "undefined" && val !== "") {
-        classesAttr.push(val);
-      }
-    }
-    let strClass = classesAttr.length > 0 ? ` class="${classesAttr.join(" ")}"` : "";
 
     let code = "";
-    code += `<${tag}${strClass}${strAttr}${voidTag ? "/" : ""}>` + model.get("content");
+    code += `<${tag}${strAttr}${voidTag ? "/" : ""}>` + model.get("content");
 
     model.components().forEach((model: any) => {
       code += model.toHTML();
