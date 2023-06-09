@@ -13,6 +13,7 @@ import { NavBar, NavBarView } from "./tw-elements/navigation_bar";
 import { Icon, IconView } from "./tw-elements/icon";
 import { Container, ContainerView } from "./tw-elements/container";
 import { Content, ContentView } from "./tw-elements/content";
+import { Text, TextView } from "./tw-elements/text";
 
 export const typeCustomCode = "custom-code";
 
@@ -31,6 +32,7 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
   });
 
   new Icon(editor, new IconView()).registry(Components);
+  new Text(editor, new TextView()).registry(Components);
   new List(editor, new ListView()).registry(Components);
   new ListItem(editor, new ListItemView()).registry(Components);
   new NavBar(editor, new NavBarView()).registry(Components);

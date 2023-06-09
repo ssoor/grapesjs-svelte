@@ -14,8 +14,12 @@ export class BaseComponentView {
   activeTimeouts: number[] = [];
   changeTimedInterval?: number;
 
+  events() {
+    return {};
+  }
+
   constructor() {
-    this.el = "<div></div>";
+    this.el = `<div></div>`;
     this.emptyEl = this.createElementByHTML(`<div>在此处放入内容</div>`);
   }
 
@@ -24,6 +28,10 @@ export class BaseComponentView {
 
     el.innerHTML = html.trim();
     return el.firstChild as HTMLElement;
+  }
+
+  _createElement(): Node {
+    return this.createElementByHTML(this.el);
   }
 
   init(view: ComponentView) {
@@ -125,38 +133,41 @@ export class BaseComponentModel {
       },
       view: {
         obj: this,
-        tagName: templateEl.tagName,
+        tagName: templateEl?.tagName!,
         getChildrenSelector: this.view.getChildrenSelector,
         init() {
           const _view = this as unknown as ComponentView;
-
-          _view.el.innerHTML = templateEl.innerHTML;
-          // _view.el.className = templateEl.className;
-          // _view.el.style.cssText = templateEl.style.cssText;
 
           let attrs: any = _view.model.getAttributes();
           for (const attr of templateEl.attributes) {
             attrs[attr.name] = attr.value;
           }
 
+          const styles: any = _view.model.getStyle();
+          const classes: any = _view.model.getClasses();
+
           delete attrs["style"];
           _view.model.setAttributes(attrs);
 
-          _view.model.set("style", templateEl.style);
+          _view.model.setStyle(templateEl.style.cssText as any);
           _view.model.setClass(templateEl.className);
 
-          _view.model.set("style-default", _view.model.get("style"));
+          _view.model.set("style-default", _view.model.getStyle());
           _view.model.set("class-default", _view.model.getClasses());
 
-          if (!attrs.class) {
-            attrs.class = "";
-          }
-          _view.model.setClass(templateEl.className + " " + attrs.class);
+          _view.model.setStyle({ ..._view.model.getStyle(), ...styles });
+          _view.model.setClass([..._view.model.getClasses(), ...classes]);
 
           this.obj.view.init(_view);
         },
+        events() {
+          return this.obj.view.events();
+        },
         onRender(opts: { editor: Editor; model: ComponentModel; el: HTMLElement }) {
           this.obj.view.onRender(opts);
+        },
+        _createElement(): Node {
+          return this.obj.view._createElement();
         },
       },
     });
@@ -196,7 +207,19 @@ export class BaseComponentModel {
         items.push(val);
       }
     }
-    attr["class"] = items.join(" ")
+    attr["class"] = items.join(" ");
+
+    delete attr["style"];
+    let dicts: any = {};
+    const styles = this.remove({ ...model.getStyle() }, { ...model.get(`style-default`) });
+    for (let prop in styles) {
+      const val = styles[prop];
+
+      if (typeof val !== "undefined" && val !== "") {
+        dicts[prop] = val;
+      }
+    }
+    attr["style"] = dicts;
 
     let strAttr = "";
     for (let prop in attr) {
@@ -225,14 +248,14 @@ export class BaseComponentModel {
 
       if (value && value === needRemove[prop]) {
         delete values[prop];
-        console.log("delete default value", prop);
+        console.log("delete default value", prop, value);
       }
     }
 
     return values;
   }
 
-  isComponent(el: Element) {
+  isComponent(el: Element): any {
     const { type } = this;
     if (!type) {
       return false;
