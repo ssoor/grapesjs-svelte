@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Editor, default as grapesjs } from "grapesjs";
+  import { default as grapesjs } from "$lib/grapesjs";
   import { onMount } from "svelte";
   import * as x from "$lib/grapesjs-plugins/ssoor";
   // Initialization for ES Users

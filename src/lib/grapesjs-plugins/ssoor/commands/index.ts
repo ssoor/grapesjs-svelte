@@ -1,13 +1,13 @@
 import { keyCustomCode, type PluginOptions } from "../";
-import type { CommandObject, Editor } from "grapesjs";
+import type { CommandObject, Editor } from "$lib/grapesjs";
 
-import type grapesjs from "grapesjs";
+import type grapesjs from "$lib/grapesjs";
 import juice from "juice";
-import { default as ComponentDrag } from "grapesjs/src/commands/view/ComponentDrag";
-import type CodeManagerModule from "grapesjs/src/code_manager";
-import type CodeMirrorEditor from "grapesjs/src/code_manager/model/CodeMirrorEditor";
-import type Component from "grapesjs/src/dom_components/model/Component";
-import { eventDrag } from "grapesjs/src/dom_components/model/Component";
+import { default as ComponentDrag } from "$lib/grapesjs/src/commands/view/ComponentDrag";
+import type CodeManagerModule from "$lib/grapesjs/src/code_manager";
+import type CodeMirrorEditor from "$lib/grapesjs/src/code_manager/model/CodeMirrorEditor";
+import type Component from "$lib/grapesjs/src/dom_components/model/Component";
+import { eventDrag } from "$lib/grapesjs/src/dom_components/model/Component";
 import { ExportTemplate } from "./export-template";
 
 export const commandNameCustomCode = "custom-code:open-modal";

@@ -3,7 +3,7 @@ import loadBlocks from "./blocks";
 import loadCommands from "./commands";
 import loadComponents from "./components";
 // import en from './locale/en';
-import type { Plugin, BlockProperties, ComponentDefinition } from "grapesjs";
+import type { Plugin, BlockProperties, ComponentDefinition } from "$lib/grapesjs";
 
 export const keyCustomCode = "custom-code-plugin__code";
 

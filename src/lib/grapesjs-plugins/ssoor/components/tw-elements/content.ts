@@ -1,8 +1,8 @@
 // Specs: https://documentation.mjml.io/#mj-button
-import type Editor from "grapesjs/src/editor";
+import type Editor from "$lib/grapesjs/src/editor";
 import { BaseComponentView, BaseComponentModel } from "./base";
-import type ComponentView from "grapesjs/src/dom_components/view/ComponentView";
-import type ComponentModel from "grapesjs/src/dom_components/model/Component";
+import type ComponentView from "$lib/grapesjs/src/dom_components/view/ComponentView";
+import type ComponentModel from "$lib/grapesjs/src/dom_components/model/Component";
 
 export const type = "tw-content";
 

@@ -25,13 +25,19 @@
 	"type": "module",
 	"dependencies": {
 		"@rollup/browser": "^3.22.0",
+		"@types/backbone": "^1.4.15",
 		"acorn": "^8.8.2",
+		"backbone": "1.4.1",
+		"backbone-undo": "^0.2.5",
 		"codemirror": "^6.0.1",
+		"codemirror-formatting": "^1.0.0",
 		"estree-walker": "^3.0.3",
 		"grapesjs": "^0.21.9",
 		"juice": "^9.0.0",
 		"mjml-browser": "^4.14.1",
+		"promise-polyfill": "^8.1.3",
 		"tw-elements": "1.0.0-beta2",
+		"underscore": "^1.13.1",
 		"yootils": "^0.3.1"
 	}
 }

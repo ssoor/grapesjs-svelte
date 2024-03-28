@@ -1,4 +1,4 @@
-import type { Editor, PluginOptions } from "grapesjs";
+import type { Editor, PluginOptions } from "$lib/grapesjs";
 import juice from "juice";
 
 export default (editor: Editor, opts: Required<PluginOptions>) => {

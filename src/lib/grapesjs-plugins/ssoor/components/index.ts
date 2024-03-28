@@ -1,8 +1,8 @@
 import type { PluginOptions } from "..";
-import type ComponentView from "grapesjs/src/dom_components/view/ComponentView";
-import type Component from "grapesjs/src/dom_components/model/Component";
-import type Trait from "grapesjs/src/trait_manager/model/Trait";
-import type Editor from "grapesjs/src/editor";
+import type ComponentView from "$lib/grapesjs/src/dom_components/view/ComponentView";
+import type Component from "$lib/grapesjs/src/dom_components/model/Component";
+import type Trait from "$lib/grapesjs/src/trait_manager/model/Trait";
+import type Editor from "$lib/grapesjs/src/editor";
 import { CustomComponent } from "./svelte/SvelteComponent";
 import { CustomComponentView } from "./svelte/SvelteComponentView";
 import { BaseComponentModel, BaseComponentView } from "./tw-elements/base";

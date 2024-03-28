@@ -1,10 +1,10 @@
 import type { PluginOptions } from "..";
 
-import type { Editor, BlockProperties } from "grapesjs";
+import type { Editor, BlockProperties } from "$lib/grapesjs";
 import { typeCustomCode } from "../components";
 import { BasicButton } from "./button";
-import { default as $ } from "grapesjs/src/utils/cash-dom";
-import type Component from "grapesjs/src/dom_components/model/Component";
+import { default as $ } from "$lib/grapesjs/src/utils/cash-dom";
+import type Component from "$lib/grapesjs/src/dom_components/model/Component";
 
 export default (editor: Editor, { blockCustomCode }: PluginOptions = {}) => {
   const { Blocks } = editor;

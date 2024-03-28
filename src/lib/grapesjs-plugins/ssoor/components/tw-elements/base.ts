@@ -1,9 +1,9 @@
-import type Editor from "grapesjs/src/editor";
-import type ComponentManager from "grapesjs/src/dom_components";
-import ComponentsView from "grapesjs/src/dom_components/view/ComponentsView";
-import type ComponentView from "grapesjs/src/dom_components/view/ComponentView";
-import type ComponentModel from "grapesjs/src/dom_components/model/Component";
-import type { ComponentDefinitionDefined } from "grapesjs/src/dom_components/model/types";
+import type Editor from "$lib/grapesjs/src/editor";
+import type ComponentManager from "$lib/grapesjs/src/dom_components";
+import ComponentsView from "$lib/grapesjs/src/dom_components/view/ComponentsView";
+import type ComponentView from "$lib/grapesjs/src/dom_components/view/ComponentView";
+import type ComponentModel from "$lib/grapesjs/src/dom_components/model/Component";
+import type { ComponentDefinitionDefined } from "$lib/grapesjs/src/dom_components/model/types";
 
 export class BaseComponentView {
   el: string;
