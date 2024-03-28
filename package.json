@@ -28,7 +28,7 @@
 		"acorn": "^8.8.2",
 		"codemirror": "^6.0.1",
 		"estree-walker": "^3.0.3",
-		"grapesjs": "^0.21.1",
+		"grapesjs": "^0.21.9",
 		"juice": "^9.0.0",
 		"mjml-browser": "^4.14.1",
 		"tw-elements": "1.0.0-beta2",
