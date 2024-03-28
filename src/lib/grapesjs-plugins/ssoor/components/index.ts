@@ -31,6 +31,41 @@ export default (editor: Editor, opts: PluginOptions = {}) => {
     },
   });
 
+  Components.addType(typeCustomCode, {
+    model: {
+      defaults: {
+        name: 'Custom Code',
+        editable: true,
+        ...opts.propsCustomCode,
+      },
+      obj: null as null | CustomComponent,
+      init() {
+        const model = this as unknown as Component;
+        this.obj = new CustomComponent(model, opts);
+
+        return this.obj.init();
+      },
+    },
+    view: {
+      obj: null as null | CustomComponentView,
+      events: { dblclick: 'onDblClick' },
+
+      init() {
+        const model = this as unknown as ComponentView;
+        this.obj = new CustomComponentView(model);
+      },
+      onRender(opts: { editor: Editor; model: Component; el: HTMLElement; }) {
+        this.obj!.onRender(opts);
+      },
+      onActive() {
+        this.obj!.onActive();
+      },
+      onDblClick() {
+        this.obj!.onDblClick();
+      },
+    },
+  });
+  
   new Icon(editor, new IconView()).registry(Components);
   new Text(editor, new TextView()).registry(Components);
   new List(editor, new ListView()).registry(Components);
